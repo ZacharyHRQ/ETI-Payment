@@ -23,7 +23,7 @@ Full url link 'http://testserver/'.
 
    - receive call from QnA service
    - check module token equal to module token given
-   - run feature 2 and 3 if checks return error
+   - run feature 2 and 3 if checks do not return errors
    - frontend button on QnA frontend to call to payment service
 
 2. Substract from wallet to reveal answer
@@ -43,6 +43,7 @@ Full url link 'http://testserver/'.
 
    - interaction with wallet service to fetch user wallet
    - interaction with transaction service to retrieve transaction of wallet user
+   - frontend on QnA page to redirect to transactions frontend
    - frontend to show the transactions of user wallet
 
 ## Endpoints that require Authentication
@@ -56,16 +57,16 @@ This endpoint to reveal marks to requestor that paid using module tokens
 
 #### Endpoint URL
 
-> http://localhost:5001/api/v1/payment/reveal
+> http://localhost:5001/api/v1/payment/reveal/{WalletID}
 
 #### JSON Body Parameters
 
 | Name        | Type   | Required | Description                      |
 | ----------- | ------ | -------- | -------------------------------- |
+| WalletId    | string | Required | unique indentifer of Wallet      |
 | QnAPostId   | string | Required | unique indentifer of Transaction |
 | TokenId     | string | Required | unique indentifer of Token       |
 | TokenNumber | int    | Required | number of tokens                 |
-| WalletId    | string | Required | unique indentifer of Wallet      |
 
 #### Example Request
 
