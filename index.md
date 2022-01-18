@@ -1,37 +1,213 @@
-## Welcome to GitHub Pages
+# ETI-Payment
 
-You can use the [editor on GitHub](https://github.com/ZacharyHRQ/ETI-Payment/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Payment package within a micro-services
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Full url link 'http://testserver/'.
 
-### Markdown
+## Ports
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+- 9230 -> Payment frontend
+- 9231 -> Payment database
+- 9232 -> Transaction service
+- 9233 -> Payment service
 
-```markdown
-Syntax highlighted code block
+## Dependencies
 
-# Header 1
-## Header 2
-### Header 3
+- QnA service
+- Marks wallet service
+- Module service
 
-- Bulleted
-- List
+## Features
 
-1. Numbered
-2. List
+1. Revealing answers to whoever that pays the token fees amount
 
-**Bold** and _Italic_ and `Code` text
+   - receive call from QnA service
+   - check module token equal to module token given
+   - run feature 2 and 3 if checks do not return errors
+   - frontend button on QnA frontend to call to payment service
 
-[Link](url) and ![Image](src)
+2. Substract from wallet to reveal answer
+
+   - check if they have sufficient tokens to reveal answers
+   - interaction with wallet service to deduct tokens
+   - interaction with transaction service to save this deduction transaction
+
+3. Add to wallet of creator of QnA post
+
+   - interaction with QnA service to find creator of post
+   - interaction with wallet service to find wallet of creator of post
+   - interaction with wallet service add tokens received from process (2) into wallet of creator of post
+   - interaction with transaction service to save this addition transaction
+
+4. Track transaction history
+
+   - interaction with wallet service to fetch user wallet
+   - interaction with transaction service to retrieve transaction of wallet user
+   - frontend on QnA page to redirect to transactions frontend
+   - frontend to show the transactions of user wallet
+
+## Endpoints that require Authentication
+
+Closed endpoints require a sign in as student to be included in the header of the
+request.
+
+### POST payment/reveal
+
+This endpoint to reveal marks to requestor that paid using module tokens
+
+#### Endpoint URL
+
+> http://localhost:5001/api/v1/payment/reveal/{WalletID}
+
+#### JSON Body Parameters
+
+| Name        | Type   | Required | Description                      |
+| ----------- | ------ | -------- | -------------------------------- |
+| WalletId    | string | Required | unique indentifer of Wallet      |
+| QnAPostId   | string | Required | unique indentifer of Transaction |
+| TokenId     | string | Required | unique indentifer of Token       |
+| TokenNumber | int    | Required | number of tokens                 |
+
+#### Example Request
+
+cURL
+
+```bash
+curl --request POST 'http://localhost:5001/api/v1/payment/reveal' \
+--header 'Content-Type: application/json' \
+--data '{
+    "email":"a@b.com",
+    "phone": "99999999",
+    "firstName": "Bob",
+    "lastName": "Dylan"
+}'
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+Windows cURL
 
-### Jekyll Themes
+```cmd
+curl --request POST "http://localhost:5001/api/v1/passenger/account" --header "Content-Type: application/json" --data "{\"email\":\"a@b.com\",\"phone\": \"99999999\",\"firstName\": \"Bob\",\"lastName\": \"Dylan\"}"
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ZacharyHRQ/ETI-Payment/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+#### Response
 
-### Support or Contact
+The response will be a status code `200` is successful, or an error code with a corresponding status message if unsuccessful.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+## Data structure
+
+### Transaction Table
+
+| Name             | Description                                      | type   |
+| ---------------- | ------------------------------------------------ | ------ |
+| TransactionId    | unique indentifer of Transaction                 | string |
+| SenderWalletId   | unique indentifer of sender wallet               | string |
+| ReceiverWalletId | unique indentifer of receiver wallet             | string |
+| TokenId          | unique type of token (eg CM token for module CM) | string |
+| NumTokens        | number of tokens                                 | int    |
+
+# ETI-Payment
+
+Payment package within a micro-services
+
+Full url link 'http://testserver/'.
+
+## Ports
+
+- 9230 -> Payment frontend
+- 9231 -> Payment database
+- 9232 -> Transaction service
+- 9233 -> Payment service
+
+## Dependencies
+
+- QnA service
+- Marks wallet service
+- Module service
+
+## Features
+
+1. Revealing answers to whoever that pays the token fees amount
+
+   - receive call from QnA service
+   - check module token equal to module token given
+   - run feature 2 and 3 if checks do not return errors
+   - frontend button on QnA frontend to call to payment service
+
+2. Substract from wallet to reveal answer
+
+   - check if they have sufficient tokens to reveal answers
+   - interaction with wallet service to deduct tokens
+   - interaction with transaction service to save this deduction transaction
+
+3. Add to wallet of creator of QnA post
+
+   - interaction with QnA service to find creator of post
+   - interaction with wallet service to find wallet of creator of post
+   - interaction with wallet service add tokens received from process (2) into wallet of creator of post
+   - interaction with transaction service to save this addition transaction
+
+4. Track transaction history
+
+   - interaction with wallet service to fetch user wallet
+   - interaction with transaction service to retrieve transaction of wallet user
+   - frontend on QnA page to redirect to transactions frontend
+   - frontend to show the transactions of user wallet
+
+## Endpoints that require Authentication
+
+Closed endpoints require a sign in as student to be included in the header of the
+request.
+
+### POST payment/reveal
+
+This endpoint to reveal marks to requestor that paid using module tokens
+
+#### Endpoint URL
+
+> http://localhost:5001/api/v1/payment/reveal/{WalletID}
+
+#### JSON Body Parameters
+
+| Name        | Type   | Required | Description                      |
+| ----------- | ------ | -------- | -------------------------------- |
+| WalletId    | string | Required | unique indentifer of Wallet      |
+| QnAPostId   | string | Required | unique indentifer of Transaction |
+| TokenId     | string | Required | unique indentifer of Token       |
+| TokenNumber | int    | Required | number of tokens                 |
+
+#### Example Request
+
+cURL
+
+```bash
+curl --request POST 'http://localhost:5001/api/v1/payment/reveal' \
+--header 'Content-Type: application/json' \
+--data '{
+    "email":"a@b.com",
+    "phone": "99999999",
+    "firstName": "Bob",
+    "lastName": "Dylan"
+}'
+```
+
+Windows cURL
+
+```cmd
+curl --request POST "http://localhost:5001/api/v1/passenger/account" --header "Content-Type: application/json" --data "{\"email\":\"a@b.com\",\"phone\": \"99999999\",\"firstName\": \"Bob\",\"lastName\": \"Dylan\"}"
+```
+
+#### Response
+
+The response will be a status code `200` is successful, or an error code with a corresponding status message if unsuccessful.
+
+## Data structure
+
+### Transaction Table
+
+| Name             | Description                                      | type   |
+| ---------------- | ------------------------------------------------ | ------ |
+| TransactionId    | unique indentifer of Transaction                 | string |
+| SenderWalletId   | unique indentifer of sender wallet               | string |
+| ReceiverWalletId | unique indentifer of receiver wallet             | string |
+| TokenId          | unique type of token (eg CM token for module CM) | string |
+| NumTokens        | number of tokens                                 | int    |
