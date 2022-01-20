@@ -37,8 +37,45 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	answer := vars["walletid"]
-	fmt.Fprintf(w, "%s", answer)
+	if r.Header.Get("Content-Type") != "application/json" {
+		
+
+
 }
+
+// TODO: Check if wallet has enough funds
+// func checkWallet() {
+
+// }
+
+func recordTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
+	jsonValue, _ := json.Marshal(map[string]int{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "tokenid": tokenID, "numtokens": numTokens})
+	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
+	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+
+	if err != nil {
+		log.Fatal(err)
+		return err
+	} else {
+		fmt.Println(resp.StatusCode)
+	}
+	defer request.Body.Close()
+	return nil
+
+}
+
+func transact() {
+
+}
+
+// TODO: set answer status to true
+// func setAnswerStatus() {
+
+// }
 
 func main() {
 	router := mux.NewRouter()
@@ -46,9 +83,10 @@ func main() {
 
 	// routes
 	router.HandleFunc("/", welcome)
-	router.HandleFunc("/api/v1/payment/reveal/{walletid}", revealAnswer).Methods(
+	router.HandleFunc("/api/v1/payment/reveal/{walletid}/", revealAnswer).Methods(
 		"POST")
 	fmt.Println("Listening at port 9233")
+
 	log.Fatal(http.ListenAndServe(":9233", router))
 
 }

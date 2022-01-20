@@ -7,14 +7,18 @@
 package main
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 
-	model "backend/Transactions/model"
+	model 
 
 	"github.com/gorilla/mux"
 
@@ -37,17 +41,32 @@ func commonMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// set seed for generating transaction hash
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+// generate transaction hash using senderwalletid , receiverwalletid , tokenid and numtokens
+func generateNewTransactionHash(Sw, Rw, Ti string, Nt int) string {
+	transactionString := Sw + Rw + Ti + string(Nt)
+	hash := sha256.New()
+	hash.Write([]byte(transactionString))
+	return hex.EncodeToString(hash.Sum(nil))
+}
+
 func welcome(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", "Welcome to Transaction service")
 }
 
+// change to query rows
 /*
 	gets all passengers from the db and returns a map of passenger ids and passenger objects
 */
-func getTransactions(db *sql.DB) (map[string]model.Transaction, error) {
-	tMap := make(map[string]model.Transaction)
+func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
+	db := connectDB() // connect to db
+	transactionList := make([]model.Transaction, 0)
 
-	rows, err := db.Query("SELECT * FROM Transaction")
+	rows, err := db.Query("SELECT * FROM Transaction WHERE SenderWalletId = ? OR ReceiverWalletId = ?", walletId, walletId)
 	if err != nil {
 		return nil, fmt.Errorf("%v", err)
 	}
@@ -58,39 +77,42 @@ func getTransactions(db *sql.DB) (map[string]model.Transaction, error) {
 		if err := rows.Scan(&transaction.TransactionId, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.TokenId, &transaction.NumTokens); err != nil {
 			return nil, fmt.Errorf("%v", err)
 		}
-		tMap[transaction.TransactionId] = transaction
+		transactionList = append(transactionList, transaction)
+
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("%v", err)
 	}
-	return tMap, nil
+	return transactionList, nil
 }
 
 /*
-	handler for route '/api/v1/passenger/{walletId}', returns the passenger by the {passengerid}
+	handler for route '/api/v1/transactions/{walletId}', returns the passenger by the {walletId}
 */
-func getTransactionsById(w http.ResponseWriter, r *http.Request) {
+func getTransactionsByWalletId(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["walletId"]
 	fmt.Println(id)
-	fetchedTransactionData, _ := getTransactions(db)
+	fetchedTransactionData, _ := fetchAllTransactionsById(id)
 	fmt.Println(fetchedTransactionData)
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(fetchedTransactionData[id])
+	json.NewEncoder(w).Encode(fetchedTransactionData)
 }
 
 /*
 	inserting a new transaction into the db
 */
-func insertPassenger(db *sql.DB, fN, lN, mN, eA string) {
+func insertTransaction(Sw, Rw, Ti string, Nt int) {
 	// insert passenger into db
-	stmt, err := db.Prepare("INSERT INTO Transaction (SenderWalletId, ReceiverWalletId, TokenId, NumTokens)  VALUES (?,?,?,?)")
+	db := connectDB() // connect to db
+	transactionHash := generateNewTransactionHash(Sw, Rw, Ti, Nt)
+	stmt, err := db.Prepare("INSERT INTO Transaction (TransactionId, SenderWalletId, ReceiverWalletId, TokenId, NumTokens)  VALUES (?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(fN, lN, mN, eA)
+	_, err = stmt.Exec(transactionHash, Sw, Rw, Ti, Nt)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,12 +121,13 @@ func insertPassenger(db *sql.DB, fN, lN, mN, eA string) {
 
 func createTransaction(w http.ResponseWriter, r *http.Request) {
 	var transaction model.Transaction
+
 	rb, err := ioutil.ReadAll(r.Body)
 	if err == nil {
 		// convert JSON to object
 		json.Unmarshal(rb, &transaction)
 		fmt.Println(transaction)
-		insertPassenger(db, transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
+		insertTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(transaction)
 	} else {
@@ -115,18 +138,7 @@ func createTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var db *sql.DB
-
-func main() {
-	// setting up db connection
-	cfg := mysql.Config{
-		User:                 "root",
-		Passwd:               "123",
-		Net:                  "tcp",
-		Addr:                 "127.0.0.1:3306",
-		DBName:               "Payment",
-		AllowNativePasswords: true,
-	}
+func connectDB() (db *sql.DB) {
 	// Get a database handle.
 	var err error
 	db, err = sql.Open("mysql", cfg.FormatDSN())
@@ -140,16 +152,33 @@ func main() {
 		log.Fatal(pingErr)
 	}
 	fmt.Println("Connected!") // if connection is alive, print "Connected!"
+	return db
+}
 
+var db *sql.DB
+
+var cfg = mysql.Config{
+	User:                 "root",
+	Passwd:               "123",
+	Net:                  "tcp",
+	Addr:                 "localhost:3306",
+	DBName:               "Payment",
+	AllowNativePasswords: true,
+}
+
+// setting up db connection
+
+func main() {
 	router := mux.NewRouter()
 	router.Use(commonMiddleware) //setting context to "json" n cors error
 
 	// routes
 	router.HandleFunc("/", welcome)
-	router.HandleFunc("/api/v1/transaction/{walletId}", getTransactionsById).Methods(
+	router.HandleFunc("/api/v1/transactions/{walletId}", getTransactionsByWalletId).Methods(
 		"GET")
-	router.HandleFunc("/api/v1/transaction/createTransaction", createTransaction).Methods(
+	router.HandleFunc("/api/v1/transactions/createTransaction", createTransaction).Methods(
 		"POST")
+
 	fmt.Println("Listening at port 9232")
 	log.Fatal(http.ListenAndServe(":9232", router))
 
