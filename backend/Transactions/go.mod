@@ -1,4 +1,4 @@
-module transaction
+module github.com/ZacharyHRQ/ETI-Payment/Transactions
 
 go 1.13
 

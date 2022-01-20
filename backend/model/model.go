@@ -1,4 +1,4 @@
-package model
+package github.com/ZacharyHRQ/ETI-Payment/Model
 
 type Transaction struct {
 	TransactionId        string `json:"transactionid"`

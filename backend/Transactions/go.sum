@@ -1,3 +1,4 @@
+github.com/ZacharyHRQ/ETI-Payment v0.0.0-20220120095355-59e8346339e4 h1:/BpRCk+OE9ML0odBTogUxEsPrbx1NSPAw9npWXA69QM=
 github.com/go-sql-driver/mysql v1.6.0 h1:BCTh4TKNUYmOmMUcQ3IipzF5prigylS7XXjEkfCHuOE=
 github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
