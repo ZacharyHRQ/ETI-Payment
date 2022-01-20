@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	model "github.com/ZacharyHRQ/ETI-Payment/model"
+	model "github.com/ZacharyHRQ/ETI-Payment/backend/model"
 
 	"github.com/gorilla/mux"
 
