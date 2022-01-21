@@ -155,8 +155,7 @@ func connectDB() (db *sql.DB) {
 	return db
 }
 
-var db *sql.DB
-
+// setting up db connection
 var cfg = mysql.Config{
 	User:                 "root",
 	Passwd:               "123",
@@ -165,8 +164,6 @@ var cfg = mysql.Config{
 	DBName:               "Payment",
 	AllowNativePasswords: true,
 }
-
-// setting up db connection
 
 func main() {
 	router := mux.NewRouter()
