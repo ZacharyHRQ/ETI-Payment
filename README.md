@@ -36,13 +36,11 @@ Full url link 'http://testserver/'.
 
    -[] interaction with QnA service to find creator of post
    -[] interaction with wallet service to find wallet of creator of post
-   -[] interaction with wallet service add tokens received from process (2) into wallet of creator of post
-   -[X] interaction with transaction service to save this addition transaction
+   -[] interaction with wallet service add tokens received from process (2) into wallet of creator of post -[X] interaction with transaction service to save this addition transaction
 
 4. Track transaction history
 
-   -[] interaction with wallet service to fetch user wallet
-   -[X] interaction with transaction service to retrieve transaction of wallet user
+   -[] interaction with wallet service to fetch user wallet -[X] interaction with transaction service to retrieve transaction of wallet user
    -[] frontend on QnA page to redirect to transactions frontend
    -[] frontend to show the transactions of user wallet
 
@@ -104,3 +102,13 @@ The response will be a status code `200` is successful, or an error code with a 
 | ReceiverWalletId | unique indentifer of receiver wallet             | string |
 | TokenId          | unique type of token (eg CM token for module CM) | string |
 | NumTokens        | number of tokens                                 | int    |
+
+### Answers Table
+
+This table is used to keep track of answers to be revealed to users who have paid
+
+| Name              | Description                           | type   |
+| ----------------- | ------------------------------------- | ------ |
+| RevealedAnswersId | unique indentifer of revealed answers | string |
+| AnswerId          | unique indentifer of answer           | string |
+| StudentId         | unique indentifer of student          | string |

@@ -66,7 +66,7 @@ func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 	db := connectDB() // connect to db
 	transactionList := make([]model.Transaction, 0)
 
-	rows, err := db.Query("SELECT * FROM Transaction WHERE SenderWalletId = ? OR ReceiverWalletId = ?", walletId, walletId)
+	rows, err := db.Query("SELECT * FROM Transaction WHERE SenderWalletId = ?", walletId)
 	if err != nil {
 		return nil, fmt.Errorf("%v", err)
 	}
@@ -74,7 +74,7 @@ func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 
 	for rows.Next() {
 		var transaction model.Transaction
-		if err := rows.Scan(&transaction.TransactionId, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.TokenId, &transaction.NumTokens); err != nil {
+		if err := rows.Scan(&transaction.TransactionId, &transaction.TransactionTimeStamp, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.AnswerId, &transaction.TokenId, &transaction.NumTokens); err != nil {
 			return nil, fmt.Errorf("%v", err)
 		}
 		transactionList = append(transactionList, transaction)

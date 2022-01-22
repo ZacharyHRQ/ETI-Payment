@@ -44,6 +44,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			json.Unmarshal(reqBody, &transaction)
 			_ := recordTransaction(transaction.SenderWalletID, transaction.ReceiverWalletID, transaction.TokenID, transaction.NumTokens)
+
 			fmt.Fprintf(w, "%s", "Transaction recorded")
 			w.WriteHeader(http.StatusCreated)
 				w.Write([]byte("201 - Driver Status Updated: " +
@@ -59,7 +60,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// TODO: Check if wallet has enough funds
+// TODO: Check if wallet has enough funds (ask jones to add module into the db)
 // func checkWallet() {
 
 // }
@@ -124,11 +125,14 @@ func recordTransaction(senderWalletID, receiverWalletID, tokenID string, numToke
 // 	return nil
 // }
 
+/*
+	Save QnA answer to database for revealing to paid user
+*/
 
-// TODO: set answer status to true
-// func setAnswerStatus() {
+func setAnswerStatus() {
+	
 
-// }
+}
 
 func main() {
 	router := mux.NewRouter()
