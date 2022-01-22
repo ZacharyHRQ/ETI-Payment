@@ -62,7 +62,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 
 // }
 
-func recordTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
+func recordTransaction(senderWalletID, receiverWalletID, tokenID string , numTokens int) (err error) {
 	jsonValue, _ := json.Marshal(map[string]int{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "tokenid": tokenID, "numtokens": numTokens})
 	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
