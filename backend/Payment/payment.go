@@ -55,9 +55,6 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("422 - Please supply transaction information " +
 				"in JSON format"))
 		}
-			
-
-
 }
 
 // TODO: Check if wallet has enough funds (ask jones to add module into the db)
@@ -128,11 +125,6 @@ func recordTransaction(senderWalletID, receiverWalletID, tokenID string, numToke
 /*
 	Save QnA answer to database for revealing to paid user
 */
-
-func setAnswerStatus() {
-	
-
-}
 
 func main() {
 	router := mux.NewRouter()
