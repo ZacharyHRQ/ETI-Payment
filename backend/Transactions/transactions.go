@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	model "model/model"
+	model "github.com/ZacharyHRQ/ETI-Payment/backend/model"
 
 	"github.com/gorilla/mux"
 
@@ -47,8 +47,8 @@ func init() {
 }
 
 // generate transaction hash using senderwalletid , receiverwalletid , tokenid and numtokens
-func generateNewTransactionHash(Sw, Rw, Ti string, Nt int) string {
-	transactionString := Sw + Rw + Ti + string(Nt)
+func generateNewTransactionHash(Sw, Rw, Ai, Ti string, Nt int) string {
+	transactionString := Sw + Rw + Ai + Ti + string(Nt)
 	hash := sha256.New()
 	hash.Write([]byte(transactionString))
 	return hex.EncodeToString(hash.Sum(nil))
@@ -102,17 +102,17 @@ func getTransactionsByWalletId(w http.ResponseWriter, r *http.Request) {
 /*
 	inserting a new transaction into the db
 */
-func insertTransaction(Sw, Rw, Ti string, Nt int) {
+func insertTransaction(Sw, Rw, Ai, Ti string, Nt int) {
 	// insert passenger into db
 	db := connectDB() // connect to db
-	transactionHash := generateNewTransactionHash(Sw, Rw, Ti, Nt)
-	stmt, err := db.Prepare("INSERT INTO Transaction (TransactionId, SenderWalletId, ReceiverWalletId, TokenId, NumTokens)  VALUES (?,?,?,?,?)")
+	transactionHash := generateNewTransactionHash(Sw, Rw, Ai, Ti, Nt)
+	stmt, err := db.Prepare("INSERT INTO Transaction (TransactionId, SenderWalletId, ReceiverWalletId, AnswerId, TokenId, NumTokens)  VALUES (?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(transactionHash, Sw, Rw, Ti, Nt)
+	_, err = stmt.Exec(transactionHash, Sw, Rw, Ai, Ti, Nt)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +127,7 @@ func createTransaction(w http.ResponseWriter, r *http.Request) {
 		// convert JSON to object
 		json.Unmarshal(rb, &transaction)
 		fmt.Println(transaction)
-		insertTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
+		insertTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.AnswerId, transaction.TokenId, transaction.NumTokens)
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(transaction)
 	} else {
@@ -176,7 +176,7 @@ func main() {
 	router.HandleFunc("/api/v1/transactions/createTransaction", createTransaction).Methods(
 		"POST")
 
-	fmt.Println("Listening at port 9232")
-	log.Fatal(http.ListenAndServe(":9232", router))
+	fmt.Println("Listening at port 9231")
+	log.Fatal(http.ListenAndServe(":9231", router))
 
 }

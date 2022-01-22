@@ -7,6 +7,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /transaction -a -ldflags '-linkmode ext
 
 FROM scratch
 COPY --from=builder /transaction /transaction
-EXPOSE 4000
+EXPOSE 9231
 
 ENTRYPOINT ["/transaction"]

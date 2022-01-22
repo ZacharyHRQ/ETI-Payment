@@ -2,14 +2,13 @@
 
 Payment package within a micro-services
 
-Full url link 'http://testserver/'.
+Full url link 'http://10.31.11.12/'.
 
 ## Ports
 
 - 9230 -> Payment frontend
-- 9231 -> Payment database
-- 9232 -> Transaction service
-- 9233 -> Payment service
+- 9231 -> Transaction service
+- 9232 -> Payment service
 
 ## Dependencies
 

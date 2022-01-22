@@ -7,7 +7,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -37,33 +40,34 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	answer := vars["walletid"]
-	if r.Header.Get("Content-Type") != "application/json" && r.Method == "POST"{
+	senderWalletID := vars["walletid"]
+	if r.Header.Get("Content-Type") != "application/json" && r.Method == "POST" {
 		var transaction model.Transaction
 		reqBody, err := ioutil.ReadAll(r.Body)
 		if err == nil {
+			transaction.SenderWalletId = senderWalletID
 			json.Unmarshal(reqBody, &transaction)
-			_ := recordTransaction(transaction.SenderWalletID, transaction.ReceiverWalletID, transaction.TokenID, transaction.NumTokens)
-
+			fmt.Println(transaction)
+			recordTransaction(transaction)
 			fmt.Fprintf(w, "%s", "Transaction recorded")
 			w.WriteHeader(http.StatusCreated)
-				w.Write([]byte("201 - Driver Status Updated: " +
-					params["driverid"]))
-		}else{
+		} else {
 			w.WriteHeader(
 				http.StatusUnprocessableEntity)
 			w.Write([]byte("422 - Please supply transaction information " +
 				"in JSON format"))
+
 		}
+	}
 }
 
-// TODO: Check if wallet has enough funds (ask jones to add module into the db)
+// TODO: Check if wallet has enough funds
 // func checkWallet() {
 
 // }
 
-func recordTransaction(senderWalletID, receiverWalletID, tokenID string , numTokens int) (err error) {
-	jsonValue, _ := json.Marshal(map[string]int{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "tokenid": tokenID, "numtokens": numTokens})
+func recordTransaction(transaction model.Transaction) (err error) {
+	jsonValue, _ := json.Marshal(transaction)
 	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
@@ -82,29 +86,7 @@ func recordTransaction(senderWalletID, receiverWalletID, tokenID string , numTok
 
 }
 
-// debit wallet 
 // func debitWallet(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-// 	jsonValue, _ := json.Marshal(map[string]int{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "tokenid": tokenID, "numtokens": numTokens})
-// 	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
-// 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
-// 	request.Header.Set("Content-Type", "application/json")
-
-// 	client := &http.Client{}
-// 	resp, err := client.Do(request)
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return err
-// 	} else {
-// 		fmt.Println(resp.StatusCode)
-// 	}
-// 	defer request.Body.Close()
-// 	return nil
-// }
-
-// credit wallet 
-// func creditWallet(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-// 	jsonValue, _ := json.Marshal(map[string]int{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "tokenid": tokenID, "numtokens": numTokens})
 // 	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
 // 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 // 	request.Header.Set("Content-Type", "application/json")
@@ -134,8 +116,8 @@ func main() {
 	router.HandleFunc("/", welcome)
 	router.HandleFunc("/api/v1/payment/reveal/{walletid}/", revealAnswer).Methods(
 		"POST")
-	fmt.Println("Listening at port 9233")
+	fmt.Println("Listening at port 9232")
 
-	log.Fatal(http.ListenAndServe(":9233", router))
+	log.Fatal(http.ListenAndServe(":9232", router))
 
 }
