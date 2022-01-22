@@ -157,10 +157,10 @@ func connectDB() (db *sql.DB) {
 
 // setting up db connection
 var cfg = mysql.Config{
-	User:                 "root",
+	User:                 "user",
 	Passwd:               "123",
 	Net:                  "tcp",
-	Addr:                 "localhost:3306",
+	Addr:                 "mysql:3306",
 	DBName:               "Payment",
 	AllowNativePasswords: true,
 }

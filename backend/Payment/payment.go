@@ -48,6 +48,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 			transaction.SenderWalletId = senderWalletID
 			json.Unmarshal(reqBody, &transaction)
 			fmt.Println(transaction)
+			sendTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
 			recordTransaction(transaction)
 			fmt.Fprintf(w, "%s", "Transaction recorded")
 			w.WriteHeader(http.StatusCreated)
@@ -86,23 +87,24 @@ func recordTransaction(transaction model.Transaction) (err error) {
 
 }
 
-// func debitWallet(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-// 	const baseURL = "http://localhost:9232/api/v1/transactions/createTransaction"
-// 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
-// 	request.Header.Set("Content-Type", "application/json")
+func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
+	jsonValue, _ := json.Marshal(map[string]string{"tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": string(numTokens)})
+	baseURL := "http://localhost:9072/api/v1/Transactions/" + senderWalletID
+	request, err := http.NewRequest(http.MethodPut, baseURL, bytes.NewBuffer(jsonValue))
+	request.Header.Set("Content-Type", "application/json")
 
-// 	client := &http.Client{}
-// 	resp, err := client.Do(request)
+	client := &http.Client{}
+	resp, err := client.Do(request)
 
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return err
-// 	} else {
-// 		fmt.Println(resp.StatusCode)
-// 	}
-// 	defer request.Body.Close()
-// 	return nil
-// }
+	if err != nil {
+		log.Fatal(err)
+		return err
+	} else {
+		fmt.Println(resp.StatusCode)
+	}
+	defer request.Body.Close()
+	return nil
+}
 
 /*
 	Save QnA answer to database for revealing to paid user
