@@ -74,7 +74,8 @@ func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 
 	for rows.Next() {
 		var transaction model.Transaction
-		if err := rows.Scan(&transaction.TransactionId, &transaction.TransactionTimeStamp, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.AnswerId, &transaction.TokenId, &transaction.NumTokens); err != nil {
+		if err := rows.Scan(&transaction.TransactionId, &transaction.TransactionTimeStamp, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.TokenId, &transaction.NumTokens); err != nil {
+			// if err := rows.Scan(&transaction.TransactionId, &transaction.TransactionTimeStamp, &transaction.SenderWalletId, &transaction.ReceiverWalletId, &transaction.AnswerId, &transaction.TokenId, &transaction.NumTokens); err != nil {
 			return nil, fmt.Errorf("%v", err)
 		}
 		transactionList = append(transactionList, transaction)
