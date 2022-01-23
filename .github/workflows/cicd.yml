@@ -31,7 +31,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          export PATH=$(go env GOPATH)/bin:$PATH
           go get -u github.com/swaggo/swag/cmd/swag
           go get -u github.com/swaggo/http-swagger
           go get -u github.com/alecthomas/template
@@ -39,6 +38,7 @@ jobs:
       - name: Generate swag docs
         run: |
           cd backend/Payment
+          export PATH=$(go env GOPATH)/bin:$PATH
           swag init
           ls
 
