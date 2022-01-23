@@ -45,6 +45,7 @@ jobs:
       # - name: adding
 
   deploy to dockerhub:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
