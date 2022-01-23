@@ -12,6 +12,7 @@ jobs:
       - name: cd into golang code
         run: |
           cd backend
+          ls
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
 
