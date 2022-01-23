@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: cd into golang code
+        run: |
+          cd backend
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
 
@@ -16,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: cd into golang code
+        run: |
+          cd backend
       - name: Install Dependencies
         run: |
           go get -u github.com/swaggo/swag/cmd/swag
