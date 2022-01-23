@@ -29,10 +29,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: cd into golang code
-        run: |
-          cd backend
-
       - name: Install Dependencies
         run: |
           go get -u github.com/swaggo/swag/cmd/swag
@@ -41,7 +37,7 @@ jobs:
 
       - name: Generate swag docs
         run: |
-          cd backend
+          cd backend/Payment
           swag init
           ls
 

@@ -18,6 +18,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	model "github.com/ZacharyHRQ/ETI-Payment/backend/model"
 	"github.com/gorilla/mux"
@@ -103,7 +104,7 @@ func recordTransaction(transaction model.Transaction) (err error) {
 }
 
 func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-	jsonValue, _ := json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": string(numTokens)})
+	jsonValue, _ := json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": strconv.Itoa(-42)})
 	baseURL := "http://localhost:9072/api/v1/Transactions/maketransaction/" + senderWalletID
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
