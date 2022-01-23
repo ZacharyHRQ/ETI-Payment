@@ -6,6 +6,11 @@
 
 package main
 
+// @title EduFi 3.18 Payment Service API documentation
+// @version 1.0.0
+// @host localhost:9232
+// @BasePath /api/v1
+
 import (
 	"bytes"
 	"encoding/json"
@@ -37,6 +42,16 @@ func commonMiddleware(next http.Handler) http.Handler {
 func welcome(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", "Welcome to Payment service")
 }
+
+// revealAnswer  ... Reveal answer to payment request
+// @Summary Reveal answer to payment request
+// @Description Reveal answer to payment request and record transaction
+// @Tags Students
+// @Accept json
+// @Param walletid path model.Transaction true "Wallet ID"
+// @Success 200
+// @Failure 404
+// @Router /api/v1/payment/reveal/{walletid}/ [post]
 
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -88,9 +103,9 @@ func recordTransaction(transaction model.Transaction) (err error) {
 }
 
 func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-	jsonValue, _ := json.Marshal(map[string]string{"tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": string(numTokens)})
-	baseURL := "http://localhost:9072/api/v1/Transactions/" + senderWalletID
-	request, err := http.NewRequest(http.MethodPut, baseURL, bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": string(numTokens)})
+	baseURL := "http://localhost:9072/api/v1/Transactions/maketransaction/" + senderWalletID
+	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}

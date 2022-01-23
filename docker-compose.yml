@@ -18,7 +18,7 @@ services:
     volumes:
       - ./sql/:/docker-entrypoint-initdb.d
     networks: 
-      - ridely
+      - payment
 
   transactions:
     depends_on:
@@ -42,6 +42,8 @@ services:
     image: ubotter/edufi3.18-payment:latest
     expose:
       - 9232
+    ports:
+      - 9231:9231
     links: 
       - mysql
     restart: always

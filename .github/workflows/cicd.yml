@@ -1,0 +1,33 @@
+name: edufi3.18-cicd
+on:
+  push:
+    branches:
+      - master
+      - main
+jobs:
+  golinter:
+    runs-ons: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+
+  cd:
+    runs-ons: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: |
+          go get -u github.com/swaggo/swag/cmd/swag
+          go get -u github.com/swaggo/http-swagger
+          go get -u github.com/alecthomas/template
+
+      - name: Generate swag docs
+        run: |
+          cd backend
+          swag init
+          ls
+
+      # - name: adding
+
+      # - name: deploy to ghpages

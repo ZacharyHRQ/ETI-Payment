@@ -25,6 +25,11 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+// @title EduFi 3.18 Transaction Service API documentation
+// @version 1.0.0
+// @host localhost:9231
+// @BasePath /api/v1
+
 /*
 setting content type to application/json and access control to allow all origins due
 to cross origin resource sharing policy as request from fronted are blocked by the browser
@@ -87,8 +92,18 @@ func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 }
 
 /*
-	handler for route '/api/v1/transactions/{walletId}', returns the passenger by the {walletId}
+	handler for route '/api/v1/transactions/{walletId}', returns the transactions  by the {walletId}
 */
+
+// Get transactions  ... Get transactions for a wallet
+// @Summary Get transactions for a wallet based on supply wallet id
+// @Description Get transactions for a wallet based on supply wallet id
+// @Tags Students
+// @Accept json
+// @Param walletid path model.Transaction true "Wallet ID"
+// @Success 200
+// @Failure 404
+// @Router /api/v1/transactions/{walletId} [get]
 func getTransactionsByWalletId(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["walletId"]
@@ -118,6 +133,15 @@ func insertTransaction(Sw, Rw, Ai, Ti string, Nt int) {
 	}
 
 }
+
+// Create transactions  ... Create transactions
+// @Summary Create transactions
+// @Description Create transactions to add into the db
+// @Tags Students
+// @Accept json
+// @Success 200
+// @Failure 404
+// @Router /api/v1/transactions/createTransaction [post]
 
 func createTransaction(w http.ResponseWriter, r *http.Request) {
 	var transaction model.Transaction
