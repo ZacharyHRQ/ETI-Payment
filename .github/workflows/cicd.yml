@@ -31,6 +31,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          export PATH=$(go env GOPATH)/bin:$PATH
           go get -u github.com/swaggo/swag/cmd/swag
           go get -u github.com/swaggo/http-swagger
           go get -u github.com/alecthomas/template
@@ -43,4 +44,13 @@ jobs:
 
       # - name: adding
 
-      # - name: deploy to ghpages
+  deploy to dockerhub:
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ubotter/edufi3.18-payment
+          tag_with_ref: true
