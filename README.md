@@ -32,8 +32,7 @@ Payment package within a micro-services
 
 3. Add to wallet of creator of QnA post
 
-   -interaction with QnA service to find creator of post
-
+   - interaction with QnA service to find creator of post
    - interaction with wallet service to find wallet of creator of post
    - interaction with wallet service add tokens received from process (2) into wallet of creator of post
    - interaction with transaction service to save this addition transaction
