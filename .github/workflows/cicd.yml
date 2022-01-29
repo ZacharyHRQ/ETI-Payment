@@ -54,7 +54,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build ./Payment --tag ${{ secrets.DOCKER_USERNAME }}/edufi3.18-payment
+        run: docker build backend/Payment --tag ${{ secrets.DOCKER_USERNAME }}/edufi3.18-payment
 
       - name: Push to Docker hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/edufi3.18-payment
@@ -71,7 +71,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build ./Payment --tag ${{ secrets.DOCKER_USERNAME }}/edufi3.18-transactions
+        run: docker build backend/Transactions --tag ${{ secrets.DOCKER_USERNAME }}/edufi3.18-transactions
 
       - name: Push to Docker hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/edufi3.18-transactions
