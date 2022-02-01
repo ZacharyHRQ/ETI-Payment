@@ -69,6 +69,7 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 */
 func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 	db := connectDB() // connect to db
+	defer db.Close()
 	transactionList := make([]model.Transaction, 0)
 
 	rows, err := db.Query("SELECT * FROM Transaction WHERE SenderWalletId = ?", walletId)
@@ -120,6 +121,7 @@ func getTransactionsByWalletId(w http.ResponseWriter, r *http.Request) {
 func insertTransaction(Sw, Rw, Ai, Ti string, Nt int) {
 	// insert passenger into db
 	db := connectDB() // connect to db
+	defer db.Close()
 	transactionHash := generateNewTransactionHash(Sw, Rw, Ai, Ti, Nt)
 	stmt, err := db.Prepare("INSERT INTO Transaction (TransactionId, SenderWalletId, ReceiverWalletId, AnswerId, TokenId, NumTokens)  VALUES (?,?,?,?,?)")
 	if err != nil {
@@ -169,7 +171,6 @@ func connectDB() (db *sql.DB) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
 	pingErr := db.Ping() // check if the connection is alive
 	if pingErr != nil {
