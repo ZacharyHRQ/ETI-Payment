@@ -86,8 +86,8 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
-	const baseURL = "http://localhost:9233/api/v1/getBalance/" + senderWallerId + "/" + tokenId
-	request, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	baseURL := "http://localhost:9233/api/v1/getBalance/" + senderWallerId + "/" + tokenId
+	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
 	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -134,7 +134,7 @@ func recordTransaction(transaction model.Transaction) (err error) {
 
 func checkIfWalletServiceIsUp() bool {
 	const baseURL = "http://localhost:9072/"
-	request, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
 	request.Header.Set("Content-Type", "application/json")
 	resp, err := http.Get("http://localhost:9072/")
 	if err != nil {
