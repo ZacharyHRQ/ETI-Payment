@@ -7,6 +7,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /payment -a -ldflags '-linkmode externa
 
 FROM scratch
 COPY --from=builder /payment /payment
-EXPOSE 9231
+EXPOSE 9232
 
 ENTRYPOINT ["/payment"]

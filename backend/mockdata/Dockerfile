@@ -7,6 +7,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /mockdb -a -ldflags '-linkmode external
 
 FROM scratch
 COPY --from=builder /mockdb /mockdb
-EXPOSE 9231
+EXPOSE 9233
 
 ENTRYPOINT ["/mockdb"]

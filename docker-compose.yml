@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-
   mysql:
     image: mariadb:10.6.4-focal
     restart: always
@@ -16,21 +15,20 @@ services:
     expose:
       - 3306
     volumes:
-      - ./sql/:/docker-entrypoint-initdb.d
+      - ./backend/sql/:/docker-entrypoint-initdb.d
     networks: 
       - payment
 
   transactions:
     depends_on:
       - mysql
+    container_name: edufi3.18-transactions
     hostname: transaction 
     image: ubotter/edufi3.18-transactions:latest
     expose:
       - 9231
     ports:
       - 9231:9231
-    links: 
-      - mysql
     restart: always
     networks:
       - payment
@@ -38,22 +36,36 @@ services:
   payment:
     depends_on:
       - mysql
+    container_name: edufi3.18-payment
     hostname: payment
     image: ubotter/edufi3.18-payment:latest
     expose:
       - 9232
     ports:
-      - 9231:9231
-    links: 
-      - mysql
+      - 9232:9232
     restart: always
     networks:
       - payment
+
+  mockdb:
+    depends_on:
+      - mysql
+    container_name: edufi3.18-mockdb
+    hostname: mockdb
+    image: ubotter/edufi3.18-mockdb:latest
+    expose:
+      - 9233
+    ports:
+      - 9233:9233
+    restart: always
+    networks:
+      - payment
+    
 
 volumes:
   node_modules:
 
 networks:
   payment:
-    driver: bridge
+
   
