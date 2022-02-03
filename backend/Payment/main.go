@@ -60,28 +60,57 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Content-Type") != "application/json" && r.Method == "POST" {
 		var transaction model.Transaction
 		reqBody, err := ioutil.ReadAll(r.Body)
-		if err == nil {
-			transaction.SenderWalletId = senderWalletID
-			json.Unmarshal(reqBody, &transaction)
-			fmt.Println(transaction)
-			sendTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
-			recordTransaction(transaction)
-			fmt.Fprintf(w, "%s", "Transaction recorded")
-			w.WriteHeader(http.StatusCreated)
-		} else {
+		if err != nil {
 			w.WriteHeader(
 				http.StatusUnprocessableEntity)
 			w.Write([]byte("422 - Please supply transaction information " +
 				"in JSON format"))
-
 		}
+
+		transaction.SenderWalletId = senderWalletID
+		json.Unmarshal(reqBody, &transaction)
+		fmt.Println(transaction)
+
+		doesWalletHaveFunds := checkWallet(transaction.SenderWalletId, transaction.TokenId, transaction.NumTokens)
+		if !doesWalletHaveFunds {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			w.Write([]byte("422 - Wallet does not have enough funds"))
+			return
+		}
+
+		sendTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
+		recordTransaction(transaction)
+		fmt.Fprintf(w, "%s", "Transaction recorded")
+		w.WriteHeader(http.StatusCreated)
 	}
 }
 
-// TODO: Check if wallet has enough funds
-// func checkWallet() {
+func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
+	const baseURL = "http://localhost:9233/api/v1/getBalance/" + senderWallerId + "/" + tokenId
+	request, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	request.Header.Set("Content-Type", "application/json")
 
-// }
+	client := &http.Client{}
+	resp, err := client.Do(request)
+
+	if err != nil {
+		log.Fatal(err)
+		return false
+	} else {
+		fmt.Println(resp.StatusCode)
+	}
+	defer request.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
+	var result map[string]interface{}
+	json.Unmarshal([]byte(body), &result)
+	return Numtokens > result["balance"].(int)
+
+}
 
 func recordTransaction(transaction model.Transaction) (err error) {
 	jsonValue, _ := json.Marshal(transaction)
@@ -103,11 +132,35 @@ func recordTransaction(transaction model.Transaction) (err error) {
 
 }
 
+func checkIfWalletServiceIsUp() bool {
+	const baseURL = "http://localhost:9072/"
+	request, err := http.NewRequest(http.MethodGet, baseURL, nil)
+	request.Header.Set("Content-Type", "application/json")
+	resp, err := http.Get("http://localhost:9072/")
+	if err != nil {
+		print(err.Error())
+	}
+	return resp.StatusCode == 200
+}
+
 func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
-	jsonValue, _ := json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": strconv.Itoa(-42)})
-	baseURL := "http://localhost:9072/api/v1/Transactions/maketransaction/" + senderWalletID
+	var jsonValue []byte
+	var baseURL string
+
+	isWalletServiceUp := checkIfWalletServiceIsUp()
+	if isWalletServiceUp {
+		jsonValue, _ = json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": strconv.Itoa(numTokens)})
+		baseURL = "http://localhost:9072/api/v1/Transactions/maketransaction/" + senderWalletID
+	} else {
+		baseURL = "http://localhost:9233/api/v1/wallet/makePayment/"
+		jsonValue, _ = json.Marshal(map[string]string{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "module": tokenID, "numTokens": strconv.Itoa(numTokens)})
+	}
+
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(request)
@@ -121,10 +174,6 @@ func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens
 	defer request.Body.Close()
 	return nil
 }
-
-/*
-	Save QnA answer to database for revealing to paid user
-*/
 
 func main() {
 	router := mux.NewRouter()

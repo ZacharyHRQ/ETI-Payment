@@ -119,6 +119,18 @@ func makePayment(w http.ResponseWriter, r *http.Request) {
 		module := result["module"].(string)
 		numTokens := result["numTokens"].(int)
 
+		err = creditWallet(senderwallet, module, numTokens)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%s", "Credit successful")
+
+		err = debitWallet(receiverwallet, module, numTokens)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%s", "Debit successful")
+
 		w.WriteHeader(http.StatusOK)
 	}
 }
@@ -127,17 +139,96 @@ func creditWallet(walletId, module string, numtokens int) error {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("UPDATE wallet SET NumTokens = ? WHERE walletid = ? AND module = ?")
+	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens-? WHERE Walletid = ? AND TokenId = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
 
+	_, err = stmt.Exec(numtokens, walletId, module)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return err
+}
+
+func debitWallet(walletId, module string, numtokens int) error {
+	db := connectDB()
+	defer db.Close()
+
+	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens+? WHERE Walletid = ? AND TokenId = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(numtokens, walletId, module)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return err
+}
+
+func getQuestions(w http.ResponseWriter, r *http.Request) {
+	fetchedQuestionData, _ := fetchQuestionData()
+	fmt.Println(fetchedQuestionData)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(fetchedQuestionData)
+}
+
+func fetchQuestionData() ([]Question, error) {
+	db := connectDB()
+	defer db.Close()
+
+	var questions []Question
+	rows, err := db.Query("SELECT * FROM Question")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var question Question
+		err := rows.Scan(&question.QuestionId, &question.StudentId, &question.Title, &question.Content, &question.Module)
+		if err != nil {
+			log.Fatal(err)
+		}
+		questions = append(questions, question)
+	}
+	return questions, err
+}
+
+func getAnswers(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["QuestionId"]
+	fetchAnswers, _ := fetchAnswerById(id)
+	fmt.Println(fetchAnswers)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(fetchAnswers)
+}
+
+func fetchAnswerById(qId string) ([]Answer, error) {
+	db := connectDB()
+	defer db.Close()
+
+	var answers []Answer
+	rows, err := db.Query("SELECT * FROM Answer WHERE QuestionId = ?", qId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var answer Answer
+		err := rows.Scan(&answer.AnswerId, &answer.QuestionId, &answer.StudentId, &answer.Content, &answer.Module)
+		if err != nil {
+			log.Fatal(err)
+		}
+		answers = append(answers, answer)
+	}
+	return answers, err
 }
 
 func main() {
@@ -147,7 +238,7 @@ func main() {
 
 	router.HandleFunc("/api/v1/wallet/getBalance/{walletId}/{module}", getWalletBalance).Methods(
 		"GET")
-	router.HandleFunc("/api/v1/wallet/makePayment/{walletId}", makePayment).Methods(
+	router.HandleFunc("/api/v1/wallet/makePayment/", makePayment).Methods(
 		"POST")
 	router.HandleFunc("/api/v1/Questions/GetQuestions", getQuestions).Methods(
 		"GET")
