@@ -222,7 +222,7 @@ func fetchAnswerById(qId string) ([]Answer, error) {
 
 	for rows.Next() {
 		var answer Answer
-		err := rows.Scan(&answer.AnswerId, &answer.QuestionId, &answer.StudentId, &answer.Content, &answer.Module)
+		err := rows.Scan(&answer.AnswerId, &answer.QuestionId, &answer.StudentId, &answer.Content)
 		if err != nil {
 			log.Fatal(err)
 		}
