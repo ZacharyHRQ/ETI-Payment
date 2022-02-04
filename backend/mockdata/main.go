@@ -89,7 +89,7 @@ func fetchWalletById(walletId, module string) (Wallet, error) {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT * FROM Wallet WHERE walletid = ? AND module = ?")
+	stmt, err := db.Prepare("SELECT * FROM Wallet WHERE WalletId = ? AND TokenId = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -139,7 +139,7 @@ func creditWallet(walletId, module string, numtokens int) error {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens-? WHERE Walletid = ? AND TokenId = ?")
+	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens-? WHERE WalletId = ? AND TokenId = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -157,7 +157,7 @@ func debitWallet(walletId, module string, numtokens int) error {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens+? WHERE Walletid = ? AND TokenId = ?")
+	stmt, err := db.Prepare("UPDATE Wallet SET NumTokens=NumTokens+? WHERE WalletId = ? AND TokenId = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
