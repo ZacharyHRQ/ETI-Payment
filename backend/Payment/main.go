@@ -55,7 +55,7 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/payment/reveal/{walletid}/ [post]
 
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("Content-Type") != "application/json" && r.Method == "POST" {
+	if r.Header.Get("Content-Type") == "application/json" && r.Method == "POST" {
 		var transaction model.Transaction
 		reqBody, err := ioutil.ReadAll(r.Body)
 		if err != nil {

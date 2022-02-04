@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 export async function getStaticProps() {
-  const res = await axios.get('http://localhost:9232/api/v1/fetchAllIds')
+  const res = await axios.get('http://localhost:9233/api/v1/fetchAllIds')
   const driversid = await res.data;
   return {
     props: { driversid }
