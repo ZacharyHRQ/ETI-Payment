@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -117,7 +118,7 @@ func makePayment(w http.ResponseWriter, r *http.Request) {
 		senderwallet := result["senderwalletid"].(string)
 		receiverwallet := result["receiverwalletid"].(string)
 		module := result["module"].(string)
-		numTokens := result["numTokens"].(int)
+		numTokens, _ := strconv.Atoi(result["numTokens"].(string))
 
 		err = creditWallet(senderwallet, module, numTokens)
 		if err != nil {
