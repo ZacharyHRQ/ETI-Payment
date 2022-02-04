@@ -83,7 +83,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
-	baseURL := "http://mockdb:9233/api/v1/getBalance/" + senderWallerId + "/" + tokenId
+	baseURL := "http://mockdb:9233/api/v1/wallet/getBalance/" + senderWallerId + "/" + tokenId
 	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
 	request.Header.Set("Content-Type", "application/json")
 
