@@ -45,6 +45,9 @@ services:
       - 9232
     ports:
       - 9232:9232
+    links:
+      - mockdb
+      - transactions
     restart: always
     networks:
       - payment
