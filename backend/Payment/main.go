@@ -133,10 +133,7 @@ func checkIfWalletServiceIsUp() bool {
 	request.Header.Set("Content-Type", "application/json")
 	fmt.Printf("Sending resp to wallet service")
 	resp, err := http.Get("http://localhost:9072/")
-	if err != nil {
-		print(err.Error())
-	}
-	return resp.StatusCode == 200
+	return err != nil
 }
 
 func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens int) (err error) {
