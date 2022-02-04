@@ -1,11 +1,11 @@
-FROM golang:1.17 AS builder
+FROM golang:1.16 AS builder
 
 WORKDIR /src
 COPY . .
 RUN go mod download
-RUN CGO_ENABLED=1 GOOS=linux go build -o /transaction -a -ldflags '-linkmode external -extldflags "-static"' .
+RUN go build -o /transaction
 
-FROM scratch
+FROM gcr.io/distroless/base-debian10
 COPY --from=builder /transaction /transaction
 EXPOSE 9231
 

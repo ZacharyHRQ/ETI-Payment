@@ -72,7 +72,7 @@ func fetchAllTransactionsById(walletId string) ([]model.Transaction, error) {
 	defer db.Close()
 	transactionList := make([]model.Transaction, 0)
 
-	rows, err := db.Query("SELECT * FROM Transaction WHERE SenderWalletId = ?", walletId)
+	rows, err := db.Query("SELECT * FROM Transactions WHERE SenderWalletId = ?", walletId)
 	if err != nil {
 		return nil, fmt.Errorf("%v", err)
 	}
@@ -123,7 +123,7 @@ func insertTransaction(Sw, Rw, Ai, Ti string, Nt int) {
 	db := connectDB() // connect to db
 	defer db.Close()
 	transactionHash := generateNewTransactionHash(Sw, Rw, Ai, Ti, Nt)
-	stmt, err := db.Prepare("INSERT INTO Transaction (TransactionId, SenderWalletId, ReceiverWalletId, AnswerId, TokenId, NumTokens)  VALUES (?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO Transactions (TransactionId, SenderWalletId, ReceiverWalletId, AnswerId, TokenId, NumTokens)  VALUES (?,?,?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}

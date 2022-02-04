@@ -24,7 +24,9 @@ services:
       - edufi3.18-mysql
     container_name: edufi3.18-transactions
     hostname: transaction 
-    image: ubotter/edufi3.18-transactions:latest
+    # build: 
+    #   context: backend/Transactions
+    #   dockerfile: Dockerfile
     expose:
       - 9231
     links:
