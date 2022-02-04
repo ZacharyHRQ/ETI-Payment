@@ -84,11 +84,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 
 func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
 	baseURL := "http://mockdb:9233/api/v1/wallet/getBalance/" + senderWallerId + "/" + tokenId
-	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
-	request.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(request)
+	resp, err := http.Get(baseURL)
 
 	if err != nil {
 		log.Fatal(err)
@@ -102,7 +98,7 @@ func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
 		log.Fatal(err)
 		return false
 	}
-	defer request.Body.Close()
+	defer resp.Body.Close()
 
 	var result map[string]interface{}
 	json.Unmarshal([]byte(body), &result)
@@ -125,6 +121,7 @@ func recordTransaction(transaction model.Transaction) (err error) {
 	} else {
 		fmt.Println(resp.StatusCode)
 	}
+
 	defer request.Body.Close()
 	return nil
 
