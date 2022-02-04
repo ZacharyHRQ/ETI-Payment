@@ -96,13 +96,14 @@ func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
 	} else {
 		fmt.Println(resp.StatusCode)
 	}
-	defer request.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 		return false
 	}
+	defer request.Body.Close()
+
 	var result map[string]interface{}
 	json.Unmarshal([]byte(body), &result)
 	return Numtokens > result["balance"].(int)
