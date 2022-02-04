@@ -89,7 +89,7 @@ func fetchWalletById(walletId, module string) (Wallet, error) {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT * FROM wallet WHERE walletid = ? AND module = ?")
+	stmt, err := db.Prepare("SELECT * FROM Wallet WHERE walletid = ? AND module = ?")
 	if err != nil {
 		log.Fatal(err)
 	}
