@@ -153,6 +153,7 @@ func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens
 		jsonValue, _ = json.Marshal(map[string]string{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "module": tokenID, "numTokens": strconv.Itoa(numTokens)})
 	}
 
+	fmt.Printf("Sending transaction to wallet service")
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
