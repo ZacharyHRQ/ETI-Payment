@@ -83,7 +83,7 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
-	baseURL := "http://edufi3.18-mockdb:9233/api/v1/getBalance/" + senderWallerId + "/" + tokenId
+	baseURL := "http://edufi3.18-mockdb/api/v1/getBalance/" + senderWallerId + "/" + tokenId
 	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
 	request.Header.Set("Content-Type", "application/json")
 
@@ -149,7 +149,7 @@ func sendTransaction(senderWalletID, receiverWalletID, tokenID string, numTokens
 		jsonValue, _ = json.Marshal(map[string]string{"StudentID": senderWalletID, "ToStudentID": receiverWalletID, "tokentypename": tokenID, "transactiontype": "Reveal Answers", "Amount": strconv.Itoa(numTokens)})
 		baseURL = "http://localhost:9072/api/v1/Transactions/maketransaction/" + senderWalletID
 	} else {
-		baseURL = "http://edufi3.18-mockdb:9233/api/v1/wallet/makePayment/"
+		baseURL = "http://edufi3.18-mockdb/api/v1/wallet/makePayment/"
 		jsonValue, _ = json.Marshal(map[string]string{"senderwalletid": senderWalletID, "receiverwalletid": receiverWalletID, "module": tokenID, "numTokens": strconv.Itoa(numTokens)})
 	}
 
