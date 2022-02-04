@@ -24,9 +24,7 @@ services:
       - edufi3.18-mysql
     container_name: edufi3.18-transactions
     hostname: transaction 
-    # build: 
-    #   context: backend/Transactions
-    #   dockerfile: Dockerfile
+    image: ubotter/edufi3.18-transactions:latest
     expose:
       - 9231
     links:
@@ -61,6 +59,8 @@ services:
       - 9233
     ports:
       - 9233:9233
+    links:
+      - edufi3.18-mysql
     restart: always
     networks:
       - payment

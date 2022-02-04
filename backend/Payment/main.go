@@ -55,8 +55,6 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/payment/reveal/{walletid}/ [post]
 
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	senderWalletID := vars["walletid"]
 	if r.Header.Get("Content-Type") != "application/json" && r.Method == "POST" {
 		var transaction model.Transaction
 		reqBody, err := ioutil.ReadAll(r.Body)
@@ -67,7 +65,6 @@ func revealAnswer(w http.ResponseWriter, r *http.Request) {
 				"in JSON format"))
 		}
 
-		transaction.SenderWalletId = senderWalletID
 		json.Unmarshal(reqBody, &transaction)
 		fmt.Println(transaction)
 
@@ -181,7 +178,7 @@ func main() {
 
 	// routes
 	router.HandleFunc("/", welcome)
-	router.HandleFunc("/api/v1/payment/reveal/{walletid}/", revealAnswer).Methods(
+	router.HandleFunc("/api/v1/payment/reveal/", revealAnswer).Methods(
 		"POST")
 	fmt.Println("Listening at port 9232")
 
