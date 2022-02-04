@@ -5,7 +5,7 @@ COPY . .
 RUN go mod download
 RUN go build -o /transaction
 
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/base-debian10:latest 
 COPY --from=builder /transaction /transaction
 EXPOSE 9231
 
