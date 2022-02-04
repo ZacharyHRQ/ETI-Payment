@@ -102,7 +102,7 @@ func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
 
 	var result map[string]interface{}
 	json.Unmarshal([]byte(body), &result)
-	return Numtokens > int(result["numtokens"].(float64))
+	return Numtokens < int(result["numtokens"].(float64))
 
 }
 
