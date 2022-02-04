@@ -132,7 +132,7 @@ func checkIfWalletServiceIsUp() bool {
 	request, _ := http.NewRequest(http.MethodGet, baseURL, nil)
 	request.Header.Set("Content-Type", "application/json")
 	fmt.Printf("Sending resp to wallet service")
-	resp, err := http.Get("http://localhost:9072/")
+	_, err := http.Get("http://localhost:9072/")
 	return err != nil
 }
 
