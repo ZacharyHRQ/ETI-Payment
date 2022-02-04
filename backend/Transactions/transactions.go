@@ -182,10 +182,10 @@ func connectDB() (db *sql.DB) {
 
 // setting up db connection
 var cfg = mysql.Config{
-	User:                 "user",
+	User:                 "root",
 	Passwd:               "123",
 	Net:                  "tcp",
-	Addr:                 "mysql:3306",
+	Addr:                 "edufi3.18-mysql:3306",
 	DBName:               "Payment",
 	AllowNativePasswords: true,
 }

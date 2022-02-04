@@ -46,10 +46,10 @@ func commonMiddleware(next http.Handler) http.Handler {
 
 // setting up db connection
 var cfg = mysql.Config{
-	User:                 "user",
+	User:                 "root",
 	Passwd:               "123",
 	Net:                  "tcp",
-	Addr:                 "mysql:3306",
+	Addr:                 "edufi3.18-mysql:3306",
 	DBName:               "mockdb",
 	AllowNativePasswords: true,
 }
