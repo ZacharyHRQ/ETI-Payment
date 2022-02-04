@@ -96,7 +96,7 @@ func fetchWalletById(walletId, module string) (Wallet, error) {
 	defer stmt.Close()
 
 	var wallet Wallet
-	err = stmt.QueryRow(walletId, module).Scan(&wallet.WalletId, &wallet.TokenId, &wallet.NumTokens)
+	err = stmt.QueryRow(walletId, module).Scan(&wallet.WalletId, &wallet.StudentId, &wallet.TokenId, &wallet.NumTokens)
 	if err != nil {
 		log.Fatal(err)
 	}
