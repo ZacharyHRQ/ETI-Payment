@@ -13,7 +13,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export async function getStaticProps() {
-    const res = await axios.get('http://localhost:9233/api/v1/Questions/GetQuestions')
+    const res = await axios.get('http://transaction:9233/api/v1/Questions/GetQuestions')
     const Questions = await res.data;
     return {
       props: {  Questions }
