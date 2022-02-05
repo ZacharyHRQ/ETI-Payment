@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json /app/
 EXPOSE 9230
 
-ENV NODE_ENV=production
 RUN npm ci
+RUN npm install 
 COPY . /
 CMD ["npm", "run dev"]
