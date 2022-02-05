@@ -5,6 +5,5 @@ COPY package*.json /app/
 EXPOSE 9230
 
 RUN npm ci
-RUN npm install 
 COPY . /
-CMD ["npm", "run dev"]
+CMD ["npm", "start"]
