@@ -67,7 +67,22 @@ services:
     restart: always
     networks:
       - payment
-    
+  
+  edufi3.18-frontend:
+    depends_on:
+      - edufi3.18-mysql
+      - transactions
+      - payment
+      - mockdb
+    container_name: edufi3.18-frontend
+    ports:
+      - 3000:9230
+    image: ubotter/edufi3.18-frontend:latest
+    volumes:
+      - ./frontend/:/app
+    command: npm run dev
+    networks:
+      - payment
 
 volumes:
   node_modules:

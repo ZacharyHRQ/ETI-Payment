@@ -21,7 +21,7 @@ type Wallet struct {
 }
 
 type Question struct {
-	QuestionId string `json:"walletid"`
+	QuestionId string `json:"questionid"`
 	StudentId  string `json:"studentid"`
 	Title      string `json:"title"`
 	Content    string `json:"content"`

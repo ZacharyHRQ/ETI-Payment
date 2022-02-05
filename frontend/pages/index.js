@@ -1,3 +1,5 @@
+import * as React from 'react';
+import axios from 'axios';
 import Head from 'next/head'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,16 +8,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+import HomeIcon from '@mui/icons-material/Home';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
 
 export async function getStaticProps() {
-  const res = await axios.get('http://localhost:9233/api/v1/fetchAllIds')
-  const driversid = await res.data;
+  const res = await axios.get('http://localhost:9231/api/v1/transactions/S10185319')
+  const transaction = await res.data;
   return {
-    props: { driversid }
+    props: {  transaction }
   }
 }
 
-export default function Home() {
+export default function Home({transaction}) {
+
   return (
     <div className="container">
       <Head>
@@ -24,43 +31,59 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          View all your transactions here 
+          QnA Payment Service 
         </h1>
 
+        <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          sx={{ display: 'flex', alignItems: 'center' }}
+          color="inherit"
+          href="/"
+        >
+          <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+            Home
+        </Link>
+        <Link
+          underline="hover"
+          sx={{ display: 'flex', alignItems: 'center' }}
+          color="inherit"
+          href="/qna"
+        >
+          <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          Questions and Answer
+        </Link>
+      </Breadcrumbs>
+
+
+        <h2> Track your transactions here </h2>
         <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                     <TableRow>
-                        <TableCell>TripId</TableCell>
-                        <TableCell align="right">PassengerId</TableCell>
-                        <TableCell align="right">DriverId</TableCell>
-                        <TableCell align="right">PickUpPostalCode</TableCell>
-                        <TableCell align="right">DropOffPostalCode</TableCell>
-                        <TableCell align="right">TripStatus</TableCell>
-                        <TableCell align="right">DateOfTrip</TableCell>
-                        <TableCell align="right">End</TableCell>
+                        <TableCell >TransactionId</TableCell>
+                        <TableCell align="right">TransactionTimeStamp</TableCell>
+                        <TableCell align="right">SenderWalletId</TableCell>
+                        <TableCell align="right">ReceiverWalletId</TableCell>
+                        <TableCell align="right">AnswerId</TableCell>
+                        <TableCell align="right">TokenId</TableCell>
+                        <TableCell align="right">NumTokens</TableCell>
 
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {trips ? trips.map((row) => (
+                    {transaction ? transaction.map((row) => (
                         <TableRow
                         key={row.tripid}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                        <TableCell component="th" scope="row">
-                            {row.tripid}
-                        </TableCell>
-                        <TableCell align="right">{row.passengerid}</TableCell>
-                        <TableCell align="right">{row.driverid}</TableCell>
-                        <TableCell align="right">{row.pickuppostalcode}</TableCell>
-                        <TableCell align="right">{row.dropoffpostalcode}</TableCell>
-                        <TableCell align="right">{row.tripstatus}</TableCell>
-                        <TableCell align="right">{row.dateoftrip}</TableCell>
-                        <Button
-                            onClick={()=>{endTrip(row.tripid)}}  sx={{ mt: 3, mb: 2 }}>
-                            End
-                        </Button>
+                        <TableCell component="th" scope="row">{row.transactionid}</TableCell>
+                        <TableCell align="right">{row.transactiontimestamp}</TableCell>
+                        <TableCell align="right">{row.senderwalletid}</TableCell>
+                        <TableCell align="right">{row.receiverwalletid}</TableCell>
+                        <TableCell align="right">{row.answerid}</TableCell>
+                        <TableCell align="right">{row.tokenid}</TableCell>
+                        <TableCell align="right">{row.numtokens}</TableCell>
 
                         </TableRow>
                     )) : null}
