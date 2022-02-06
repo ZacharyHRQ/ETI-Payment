@@ -274,7 +274,7 @@ func updateAnswerById(aId string) error {
 	db := connectDB()
 	defer db.Close()
 
-	stmt, err := db.Prepare("UPDATE Answer SET AnswerId=? WHERE Paid=?")
+	stmt, err := db.Prepare("UPDATE Answer SET Paid=? WHERE AnswerId=?")
 	if err != nil {
 		log.Fatal(err)
 		return err

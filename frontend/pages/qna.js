@@ -146,7 +146,7 @@ export default function QNA({Questions,Answers}) {
                       Answered by {row.studentid}
                       </Typography>
 
-                      {row.Paid === 1 ?  <Typography variant="body2">
+                      {row.paid === 1 ?  <Typography variant="body2">
                           {row.content}
                       </Typography>
                       : <Button
