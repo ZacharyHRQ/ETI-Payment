@@ -112,24 +112,24 @@ func getAllWallet(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(fetchedWalletData)
 }
 
-func fetchWallets() ([]Wallet, error) {
+func fetchWallets() ([]string, error) {
 	db := connectDB()
 	defer db.Close()
 
-	var wallets []Wallet
+	var ids []string
 	rows, err := db.Query("SELECT DISTINCT StudentId FROM Wallet")
 	if err != nil {
 		log.Fatal(err)
 	}
 	for rows.Next() {
-		var wallet Wallet
-		err = rows.Scan(&wallet.WalletId, &wallet.StudentId, &wallet.TokenId, &wallet.NumTokens)
+		var id string
+		err = rows.Scan(&id)
 		if err != nil {
 			log.Fatal(err)
 		}
-		wallets = append(wallets, wallet)
+		ids = append(ids, id)
 	}
-	return wallets, err
+	return ids, err
 }
 
 func makePayment(w http.ResponseWriter, r *http.Request) {
