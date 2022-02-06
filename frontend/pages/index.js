@@ -12,16 +12,28 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import HomeIcon from '@mui/icons-material/Home';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import { Container } from '@mui/material';
 
 export async function getStaticProps() {
-  const res = await axios.get('http://localhost:9231/api/v1/transactions/S10185319')
-  const transaction = await res.data;
+  const res = await axios.get('http://mockdb:9233/api/v1/wallet/getAll')
+  const wallets = await res.data;
+
   return {
-    props: {  transaction }
+    props: {  wallets }
   }
 }
 
-export default function Home({transaction}) {
+export default function Home({wallets}) {
+
+  const [id, setid] = React.useState("");
+  const [transactions, setTransactions] = React.useState([]);
+
+  const handleChange = (event) => {
+    setid(event.target.value);
+    console.log(id);
+  };
+
+
 
   return (
     <div className="container">
@@ -55,42 +67,67 @@ export default function Home({transaction}) {
         </Link>
       </Breadcrumbs>
 
+      <InputLabel id="demo-simple-select-standard-label">StudentID</InputLabel>
+      <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={id}
+          onChange={handleChange}
+          name="id"
+          label="id"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
 
-        <h2> Track your transactions here </h2>
-        <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell >TransactionId</TableCell>
-                        <TableCell align="right">TransactionTimeStamp</TableCell>
-                        <TableCell align="right">SenderWalletId</TableCell>
-                        <TableCell align="right">ReceiverWalletId</TableCell>
-                        <TableCell align="right">AnswerId</TableCell>
-                        <TableCell align="right">TokenId</TableCell>
-                        <TableCell align="right">NumTokens</TableCell>
+          {wallets.map(wallet => (
+            <MenuItem value={wallet.studentid } key={wallet.walletid}>{wallet.studentid}</MenuItem>
+          ))}
+        </Select>
 
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {transaction ? transaction.map((row) => (
-                        <TableRow
-                        key={row.tripid}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                        <TableCell component="th" scope="row">{row.transactionid}</TableCell>
-                        <TableCell align="right">{row.transactiontimestamp}</TableCell>
-                        <TableCell align="right">{row.senderwalletid}</TableCell>
-                        <TableCell align="right">{row.receiverwalletid}</TableCell>
-                        <TableCell align="right">{row.answerid}</TableCell>
-                        <TableCell align="right">{row.tokenid}</TableCell>
-                        <TableCell align="right">{row.numtokens}</TableCell>
+        {
+          id ? <Container>
 
-                        </TableRow>
-                    )) : null}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+          <h2> Track your transactions here </h2>
+          <TableContainer component={Paper}>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                      <TableRow>
+                          <TableCell >TransactionId</TableCell>
+                          <TableCell align="right">TransactionTimeStamp</TableCell>
+                          <TableCell align="right">SenderWalletId</TableCell>
+                          <TableCell align="right">ReceiverWalletId</TableCell>
+                          <TableCell align="right">AnswerId</TableCell>
+                          <TableCell align="right">TokenId</TableCell>
+                          <TableCell align="right">NumTokens</TableCell>
+  
+                      </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      {transaction ? transaction.map((row) => (
+                          <TableRow
+                          key={row.transactionid}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                          <TableCell component="th" scope="row">{row.transactionid}</TableCell>
+                          <TableCell align="right">{row.transactiontimestamp}</TableCell>
+                          <TableCell align="right">{row.senderwalletid}</TableCell>
+                          <TableCell align="right">{row.receiverwalletid}</TableCell>
+                          <TableCell align="right">{row.answerid}</TableCell>
+                          <TableCell align="right">{row.tokenid}</TableCell>
+                          <TableCell align="right">{row.numtokens}</TableCell>
+  
+                          </TableRow>
+                      )) : null}
+                      </TableBody>
+                  </Table>
+              </TableContainer>
 
+
+          </Container> 
+          : <h2> Please select an id </h2>
+        }
+       
 
 
 

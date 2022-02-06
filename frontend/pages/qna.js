@@ -11,9 +11,11 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/router'
+
 
 export async function getStaticProps() {
-    const res = await axios.get('http://transaction:9233/api/v1/Questions/GetQuestions')
+    const res = await axios.get('http://mockdb:9233/api/v1/Questions/GetQuestions')
     const Questions = await res.data;
     return {
       props: {  Questions }
@@ -23,11 +25,14 @@ export async function getStaticProps() {
 
 export default function QNA({Questions}) {
 
+  const router = useRouter()
+
+
 
   return (
     <Container component="main" maxWidth="xs">
       <Head>
-        <title>EduFI QnA Transactions page</title>
+        <title>EduFI QnA page</title>
       </Head>
 
         <h1 className="title">
@@ -71,7 +76,7 @@ export default function QNA({Questions}) {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button size="small"> See Answers</Button>
+            <Button  size="small" onClick={() => router.push({pathname : '/questions/[id]', query : {id: row.questionid, question: JSON.stringify(row), answer: JSON.stringify(row) },})} > See Answers </Button>
           </CardActions>
         </Card>
         ))): null }

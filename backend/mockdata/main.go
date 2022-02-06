@@ -105,6 +105,33 @@ func fetchWalletById(walletId, module string) (Wallet, error) {
 	return wallet, err
 }
 
+func getAllWallet(w http.ResponseWriter, r *http.Request) {
+	fetchedWalletData, _ := fetchWallets()
+	fmt.Println(fetchedWalletData)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(fetchedWalletData)
+}
+
+func fetchWallets() ([]Wallet, error) {
+	db := connectDB()
+	defer db.Close()
+
+	var wallets []Wallet
+	rows, err := db.Query("SELECT * FROM Wallet")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		var wallet Wallet
+		err = rows.Scan(&wallet.WalletId, &wallet.StudentId, &wallet.TokenId, &wallet.NumTokens)
+		if err != nil {
+			log.Fatal(err)
+		}
+		wallets = append(wallets, wallet)
+	}
+	return wallets, err
+}
+
 func makePayment(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		body, err := ioutil.ReadAll(r.Body)
@@ -239,6 +266,7 @@ func main() {
 
 	router.HandleFunc("/api/v1/wallet/getBalance/{walletId}/{module}", getWalletBalance).Methods(
 		"GET")
+	router.HandleFunc("/api/v1/wallet/getAll", getAllWallet).Methods("GET")
 	router.HandleFunc("/api/v1/wallet/makePayment/", makePayment).Methods(
 		"POST")
 	router.HandleFunc("/api/v1/Questions/GetQuestions", getQuestions).Methods(

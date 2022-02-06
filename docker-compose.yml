@@ -76,7 +76,7 @@ services:
       - mockdb
     container_name: edufi3.18-frontend
     ports:
-      - 3000:9230
+      - 9230:9230
     image: ubotter/edufi3.18-frontend:latest
     volumes:
       - ./frontend/:/app
