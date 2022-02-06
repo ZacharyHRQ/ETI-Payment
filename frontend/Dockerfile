@@ -4,7 +4,10 @@ WORKDIR /app
 COPY package*.json /app
 EXPOSE 9230
 
-COPY ./frontend /app
+COPY .next ./app
+COPY node_modules ./app
+COPY public ./app
+COPY pages ./app
 RUN npm ci
 
 CMD ["npm", "start"]
