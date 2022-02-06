@@ -35,7 +35,7 @@ INSERT INTO Question(QuestionId, StudentId, Title, Content, Module) VALUES ("1",
 SELECT * FROM mockdb.Question;
 
 INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "1", "S10185318","answer is 10", 1);
-INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "1", "S10185317","11", 0);
-INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "3", "S10185318","answer is 10", 0);
+INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("2", "1", "S10185317","11", 0);
+INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("3", "3", "S10185318","answer is 10", 0);
 
 SELECT * FROM mockdb.Answer;
