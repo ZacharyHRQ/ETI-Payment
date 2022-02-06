@@ -43,7 +43,7 @@ export default function Home({wallets}) {
 
   useEffect(() => {
     if (id !== "") {
-      axios.get(`http://transaction:9231/api/v1/wallet/getTransactions/${id}`,{
+      axios.get(`http://localhost:9231/api/v1/wallet/getTransactions/${id}`,{
         crossdomain: true })
       .then(res => {
         setTransactions(res.data);
@@ -102,7 +102,7 @@ export default function Home({wallets}) {
           </MenuItem>
 
           {wallets.map(wallet => (
-            <MenuItem value={wallet.studentid } key={wallet.walletid}>{wallet.studentid}</MenuItem>
+            <MenuItem value={wallet } key={wallet}>{wallet}</MenuItem>
           ))}
         </Select>
 

@@ -21,7 +21,7 @@ Drop Table if exists mockdb.Answer;
 
 CREATE TABLE Wallet (WalletId int PRIMARY KEY auto_increment, StudentId VARCHAR(120), TokenId VARCHAR(8), NumTokens int); 
 CREATE TABLE Question (QuestionId VARCHAR(120)  PRIMARY KEY, StudentId VARCHAR(120), Title VARCHAR(240), Content VARCHAR(1000), Module VARCHAR(20)); 
-CREATE TABLE Answer (AnswerId VARCHAR(120)  PRIMARY KEY, QuestionId VARCHAR(120), StudentId VARCHAR(120), Content VARCHAR(1000)); 
+CREATE TABLE Answer (AnswerId VARCHAR(120)  PRIMARY KEY, QuestionId VARCHAR(120), StudentId VARCHAR(120), Content VARCHAR(1000), Paid int ); 
 
 INSERT INTO Wallet(StudentId, TokenId, NumTokens) VALUES ("S10185319","CM",10);
 INSERT INTO Wallet(StudentId, TokenId, NumTokens) VALUES ("S10185318","CM",10);
@@ -34,6 +34,8 @@ INSERT INTO Question(QuestionId, StudentId, Title, Content, Module) VALUES ("1",
 
 SELECT * FROM mockdb.Question;
 
-INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content) VALUES ("1", "1", "S10185318","answer is 10");
+INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "1", "S10185318","answer is 10", 1);
+INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "1", "S10185317","11", 0);
+INSERT INTO Answer(AnswerId, QuestionId, StudentId, Content, Paid) VALUES ("1", "3", "S10185318","answer is 10", 0);
 
 SELECT * FROM mockdb.Answer;

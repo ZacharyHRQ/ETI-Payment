@@ -33,6 +33,7 @@ type Answer struct {
 	QuestionId string `json:"walletid"`
 	StudentId  string `json:"studentid"`
 	Content    string `json:"content"`
+	Paid       int    `json:"paid"`
 }
 
 // middleware for setting header to json only
@@ -250,13 +251,42 @@ func fetchAnswerById(qId string) ([]Answer, error) {
 
 	for rows.Next() {
 		var answer Answer
-		err := rows.Scan(&answer.AnswerId, &answer.QuestionId, &answer.StudentId, &answer.Content)
+		err := rows.Scan(&answer.AnswerId, &answer.QuestionId, &answer.StudentId, &answer.Content, &answer.Paid)
 		if err != nil {
 			log.Fatal(err)
 		}
 		answers = append(answers, answer)
 	}
 	return answers, err
+}
+
+func updateAnswers(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["AnswerId"]
+	err := updateAnswerById(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func updateAnswerById(aId string) error {
+	db := connectDB()
+	defer db.Close()
+
+	stmt, err := db.Prepare("UPDATE Answer SET AnswerId=? WHERE Paid=?")
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(aId, 1)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -273,6 +303,7 @@ func main() {
 		"GET")
 	router.HandleFunc("/api/v1/Answers/GetAnswers/{QuestionId}", getAnswers).Methods(
 		"GET")
+	router.HandleFunc("/api/v1/Answers/ChangeStatus/{AnswerId}", updateAnswers).Methods("POST")
 
 	fmt.Println("Listening at port 9233")
 	log.Fatal(http.ListenAndServe(":9233", router))

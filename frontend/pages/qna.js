@@ -41,27 +41,15 @@ const ExpandMore = styled((props) => {
 
 
 export default function QNA({Questions,Answers}) {
-
+  const router = useRouter()
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  async function checkValid(aid){ 
-    const res = await axios.get('http://transaction:9231/api/v1/transactions/S10185319')
-    const transactions = await res.data;
-    for (var i = 0; i < transactions.length; i++) {
-      if (transactions[i].answerid === aid) {
-        return true;
-      }
-    }
-    return false;
-
-  }
-
   async function makePayment(answer) {
     const jsonString = JSON.stringify({
-        senderwalletid : S10185319,
+        senderwalletid : "S10185319",
         receiverwalletid : answer.walletid,
         answerid : answer.answerid,
         tokenid : "CM", 
@@ -78,6 +66,8 @@ export default function QNA({Questions,Answers}) {
       mode : 'no-cors',
     })
     console.log(res.status);
+    const res1 = await fetch("http://mockdb:9233/api/v1/Answers/ChangeStatus/" + answer.answerid)
+    console.log(res1.status)
     if (res.status === 0){ 
       alert("Payment Successful");
       router.push('/')
@@ -152,13 +142,13 @@ export default function QNA({Questions,Answers}) {
                       Answered by {row.studentid}
                       </Typography>
 
-                      {checkValid(row.answerid) ?  <Typography variant="body2">
+                      {row.Paid == 1 ?  <Typography variant="body2">
                           {row.content}
                       </Typography>
                       : <Button
                       onClick={()=> makePayment(row)}
                     >
-                      Request
+                      Pay
                     </Button>
                       }
 
