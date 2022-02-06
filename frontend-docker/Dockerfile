@@ -50,4 +50,4 @@ EXPOSE 9230
 
 ENV PORT 9230
 
-CMD ["node", "server.js"]
+CMD ["next", "start"]
