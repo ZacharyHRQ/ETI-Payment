@@ -27,10 +27,10 @@ services:
     image: ubotter/edufi3.18-transactions:latest
     expose:
       - 9231
-    links:
-      - edufi3.18-mysql
     ports:
       - 9231:9231
+    links:
+      - edufi3.18-mysql
     restart: always
     networks:
       - payment
@@ -61,7 +61,7 @@ services:
     expose:
       - 9233
     ports:
-      - 9233:9233
+      - 9232:9232
     links:
       - edufi3.18-mysql
     restart: always
@@ -83,6 +83,10 @@ services:
     command: npm run dev
     networks:
       - payment
+    links: 
+      - payment
+      - transactions
+      - mockdb
 
 volumes:
   node_modules:

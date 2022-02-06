@@ -41,6 +41,19 @@ export default function Home({wallets}) {
     console.log(id);
   };
 
+  useEffect(() => {
+    if (id !== "") {
+      axios.get(`http://transaction:9231/api/v1/wallet/getTransactions/${id}`,{
+        crossdomain: true })
+      .then(res => {
+        setTransactions(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    }
+  },[id]);
+
 
 
   return (
@@ -112,7 +125,7 @@ export default function Home({wallets}) {
                       </TableRow>
                       </TableHead>
                       <TableBody>
-                      {transaction ? transaction.map((row) => (
+                      {transactions ? transactions.map((row) => (
                           <TableRow
                           key={row.transactionid}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
