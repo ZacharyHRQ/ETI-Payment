@@ -77,12 +77,11 @@ services:
     container_name: edufi3.18-frontend
     ports:
       - 9230:9230
-    image: ubotter/edufi3.18-frontend:latest
-    command: npm install && npm run dev 
-    volumes:
-      - ./frontend/:/app
+    image: ubotter/edufi3.18-frontend:latest 
     networks:
       - payment
+    volumes:
+      - ./frontend:/app
     links: 
       - payment
       - transactions
