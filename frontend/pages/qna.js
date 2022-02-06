@@ -23,6 +23,7 @@ export async function getStaticProps() {
     const Questions = await res.data;
     const res2 = await axios.get('http://mockdb:9233/api/v1/Answers/GetAnswers/1')
     const Answers = await res2.data;
+    console.log(res2.data)
     return {
       props: {  Questions , Answers }
     }
@@ -50,13 +51,14 @@ export default function QNA({Questions,Answers}) {
   async function makePayment(answer) {
     const jsonString = JSON.stringify({
         senderwalletid : "S10185319",
-        receiverwalletid : answer.walletid,
+        receiverwalletid : answer.studentid,
         answerid : answer.answerid,
         tokenid : "CM", 
         numtokens : 1,
     });
+    console.log(answer.Paid)
     console.log(jsonString);
-    const res = await fetch('http://payment:9232/api/v1/payment/reveal/', {
+    const res = await fetch('http://localhost:9232/api/v1/payment/reveal/', {
       body : jsonString,
       method : 'POST',
       headers : {
@@ -66,7 +68,9 @@ export default function QNA({Questions,Answers}) {
       mode : 'no-cors',
     })
     console.log(res.status);
-    const res1 = await fetch("http://mockdb:9233/api/v1/Answers/ChangeStatus/" + answer.answerid)
+    const res1 = await fetch("http://localhost:9233/api/v1/Answers/ChangeStatus/" + answer.answerid, {
+      method: 'POST',
+    })
     console.log(res1.status)
     if (res.status === 0){ 
       alert("Payment Successful");
@@ -142,7 +146,7 @@ export default function QNA({Questions,Answers}) {
                       Answered by {row.studentid}
                       </Typography>
 
-                      {row.Paid == 1 ?  <Typography variant="body2">
+                      {row.Paid === 1 ?  <Typography variant="body2">
                           {row.content}
                       </Typography>
                       : <Button

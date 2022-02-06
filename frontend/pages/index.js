@@ -43,7 +43,7 @@ export default function Home({wallets}) {
 
   useEffect(() => {
     if (id !== "") {
-      axios.get(`http://localhost:9231/api/v1/wallet/getTransactions/${id}`,{
+      axios.get(`http://localhost:9231/api/v1/transactions/${id}`,{
         crossdomain: true })
       .then(res => {
         setTransactions(res.data);

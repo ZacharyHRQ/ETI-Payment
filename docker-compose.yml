@@ -23,7 +23,7 @@ services:
     depends_on:
       - edufi3.18-mysql
     container_name: edufi3.18-transactions
-    hostname: transaction 
+    hostname: transactions
     image: ubotter/edufi3.18-transactions:latest
     expose:
       - 9231
