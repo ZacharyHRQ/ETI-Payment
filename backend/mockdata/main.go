@@ -117,7 +117,7 @@ func fetchWallets() ([]Wallet, error) {
 	defer db.Close()
 
 	var wallets []Wallet
-	rows, err := db.Query("SELECT * FROM Wallet")
+	rows, err := db.Query("SELECT DISTINCT StudentId FROM Wallet")
 	if err != nil {
 		log.Fatal(err)
 	}
