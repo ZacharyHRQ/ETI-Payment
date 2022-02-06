@@ -80,9 +80,8 @@ services:
     image: ubotter/edufi3.18-frontend:latest 
     networks:
       - payment
-    command: npm run dev 
     volumes:
-      - ./frontend:/app
+      - ./frontend-docker:/app
     links: 
       - payment
       - transactions

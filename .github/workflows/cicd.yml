@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - new-frontend
 jobs:
   dockerlinter:
     runs-on: ubuntu-latest
@@ -33,7 +34,7 @@ jobs:
       - name: frontendlint
         uses: luke142367/Docker-Lint-Action@v1.0.0
         with:
-          target: frontend/Dockerfile
+          target: frontend-docker/Dockerfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -109,6 +110,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: frontend
+          context: frontend-docker
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/edufi3.18-frontend
