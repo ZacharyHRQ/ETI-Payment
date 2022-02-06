@@ -61,7 +61,7 @@ services:
     expose:
       - 9233
     ports:
-      - 9232:9232
+      - 9233:9233
     links:
       - edufi3.18-mysql
     restart: always
