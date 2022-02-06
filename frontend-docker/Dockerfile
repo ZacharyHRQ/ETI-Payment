@@ -8,12 +8,14 @@ WORKDIR /app
 
 # If using npm with a `package-lock.json` comment out above and use below instead
 COPY package.json package-lock.json ./ 
+COPY .next ./
 RUN npm ci
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/.next ./.next
 COPY . .
 
 EXPOSE 9230
