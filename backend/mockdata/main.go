@@ -48,7 +48,7 @@ func commonMiddleware(next http.Handler) http.Handler {
 
 // setting up db connection
 var cfg = mysql.Config{
-	User:                 "root",
+	User:                 "user",
 	Passwd:               "123",
 	Net:                  "tcp",
 	Addr:                 "mysql:3306",

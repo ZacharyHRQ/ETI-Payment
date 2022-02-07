@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS Payment;
 
--- CREATE USER 'user'@'localhost' IDENTIFIED BY 'local';
--- GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+CREATE USER 'user'@'localhost' IDENTIFIED BY '123';
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
 
 Use Payment;
 

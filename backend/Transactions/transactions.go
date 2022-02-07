@@ -182,7 +182,7 @@ func connectDB() (db *sql.DB) {
 
 // setting up db connection
 var cfg = mysql.Config{
-	User:                 "root",
+	User:                 "user",
 	Passwd:               "123",
 	Net:                  "tcp",
 	Addr:                 "mysql:3306",

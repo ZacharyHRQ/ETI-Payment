@@ -25,7 +25,6 @@ import { useEffect } from 'react';
 export async function getStaticProps() {
   const res = await axios.get('http://mockdb:9233/api/v1/wallet/getAll')
   const wallets = await res.data;
-
   return {
     props: {  wallets }
   }
