@@ -56,15 +56,13 @@ export default function QNA({Questions,Answers}) {
         tokenid : "CM", 
         numtokens : 1,
     });
-    console.log(answer.Paid)
     console.log(jsonString);
     const res = await fetch('http://localhost:9232/api/v1/payment/reveal/', {
-      body : jsonString,
-      method : 'POST',
+      method : "POST",
       headers : {
-        'Content-Type' : 'application/json',
-
+        'Content-Type' : 'application/json'
       },
+      body : jsonString,
       mode : 'no-cors',
     })
     console.log(res.status);
@@ -72,7 +70,7 @@ export default function QNA({Questions,Answers}) {
       method: 'POST',
     })
     console.log(res1.status)
-    if (res.status === 0){ 
+    if (res.status === 200){ 
       alert("Payment Successful");
       router.push('/')
     }

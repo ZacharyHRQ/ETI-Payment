@@ -35,6 +35,7 @@ export default function Home({wallets}) {
 
   const [id, setid] = React.useState("");
   const [transactions, setTransactions] = React.useState([]);
+  const [wallet, setWallet] = React.useState({});
 
   const handleChange = (event) => {
     setid(event.target.value);
@@ -47,6 +48,15 @@ export default function Home({wallets}) {
         crossdomain: true })
       .then(res => {
         setTransactions(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+      axios.get(`http://localhost:9233/api/v1/wallet/getBalance/${id}/CM`,{
+        crossdomain: true })
+      .then(res => {
+        setWallet(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -108,6 +118,9 @@ export default function Home({wallets}) {
 
         {
           id ? <Container>
+            <h3>Balance: {wallet.numtokens}</h3>
+
+            <br/>
 
           <h2> Track your transactions here </h2>
           <TableContainer component={Paper}>
@@ -118,7 +131,6 @@ export default function Home({wallets}) {
                           <TableCell align="right">TransactionTimeStamp</TableCell>
                           <TableCell align="right">SenderWalletId</TableCell>
                           <TableCell align="right">ReceiverWalletId</TableCell>
-                          <TableCell align="right">AnswerId</TableCell>
                           <TableCell align="right">TokenId</TableCell>
                           <TableCell align="right">NumTokens</TableCell>
   
@@ -134,7 +146,6 @@ export default function Home({wallets}) {
                           <TableCell align="right">{row.transactiontimestamp}</TableCell>
                           <TableCell align="right">{row.senderwalletid}</TableCell>
                           <TableCell align="right">{row.receiverwalletid}</TableCell>
-                          <TableCell align="right">{row.answerid}</TableCell>
                           <TableCell align="right">{row.tokenid}</TableCell>
                           <TableCell align="right">{row.numtokens}</TableCell>
   

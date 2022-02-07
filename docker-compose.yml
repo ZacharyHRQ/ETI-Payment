@@ -40,7 +40,8 @@ services:
       - edufi3.18-mysql
     container_name: edufi3.18-payment
     hostname: payment
-    image: ubotter/edufi3.18-payment:latest
+    build: 
+      context: ./backend/Payment
     expose:
       - 9232
     ports:
