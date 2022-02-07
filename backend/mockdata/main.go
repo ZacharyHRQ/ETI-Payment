@@ -281,7 +281,7 @@ func updateAnswerById(aId string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(aId, 1)
+	_, err = stmt.Exec(1,aId)
 	if err != nil {
 		log.Fatal(err)
 		return err
