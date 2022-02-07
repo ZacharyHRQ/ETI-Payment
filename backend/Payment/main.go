@@ -55,31 +55,31 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/payment/reveal/{walletid}/ [post]
 
 func revealAnswer(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("Content-Type") == "application/json" && r.Method == "POST" {
-		var transaction model.Transaction
-		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(
-				http.StatusUnprocessableEntity)
-			w.Write([]byte("422 - Please supply transaction information " +
-				"in JSON format"))
-		}
-
-		json.Unmarshal(reqBody, &transaction)
-		fmt.Println(transaction)
-
-		doesWalletHaveFunds := checkWallet(transaction.SenderWalletId, transaction.TokenId, transaction.NumTokens)
-		if !doesWalletHaveFunds {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			w.Write([]byte("422 - Wallet does not have enough funds"))
-			return
-		}
-
-		sendTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
-		recordTransaction(transaction)
-		fmt.Fprintf(w, "%s", "Transaction recorded")
-		w.WriteHeader(http.StatusCreated)
+	fmt.Println("here")
+	var transaction model.Transaction
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(
+			http.StatusUnprocessableEntity)
+		w.Write([]byte("422 - Please supply transaction information " +
+			"in JSON format"))
 	}
+
+	json.Unmarshal(reqBody, &transaction)
+	fmt.Println(transaction)
+
+	doesWalletHaveFunds := checkWallet(transaction.SenderWalletId, transaction.TokenId, transaction.NumTokens)
+	if !doesWalletHaveFunds {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.Write([]byte("422 - Wallet does not have enough funds"))
+		return
+	}
+
+	sendTransaction(transaction.SenderWalletId, transaction.ReceiverWalletId, transaction.TokenId, transaction.NumTokens)
+	recordTransaction(transaction)
+	fmt.Fprintf(w, "%s", "Transaction recorded")
+	w.WriteHeader(http.StatusCreated)
+	
 }
 
 func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
@@ -108,7 +108,7 @@ func checkWallet(senderWallerId, tokenId string, Numtokens int) bool {
 
 func recordTransaction(transaction model.Transaction) (err error) {
 	jsonValue, _ := json.Marshal(transaction)
-	const baseURL = "http://transaction:9231/api/v1/transactions/createTransaction"
+	const baseURL = "http://transactions:9231/api/v1/transactions/createTransaction"
 	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(jsonValue))
 	request.Header.Set("Content-Type", "application/json")
 
